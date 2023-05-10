@@ -6,9 +6,11 @@
 
 #include "pitches.h"
 
+#include "HX711.h"
+
 
 //screen --------------------------------------------------------------
-LiquidCrystal_I2C lcd(0x27, 16, 4);
+LiquidCrystal_I2C lcd(0x27, 16, 4);// SCREEN TESTE
 
 //sound------------------------------------------------------------
 const int BUZZER_PIN = 0;
@@ -37,7 +39,7 @@ int amount;
 //temperature----------------------------------------------------------
 
 //Load cell----------------------------------------------------------
-#include "HX711.h"
+//#include "HX711.h"
 #define calibration_factor 104400
 #define system_weight -4.600
 #define DOUT 3

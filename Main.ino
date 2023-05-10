@@ -6,6 +6,8 @@
 
 #include "pitches.h"
 
+é mesmo
+
 //screen --------------------------------------------------------------
 LiquidCrystal_I2C lcd(0x27, 16, 4);
 

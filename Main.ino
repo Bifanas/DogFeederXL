@@ -8,7 +8,7 @@
 
 #include "HX711.h"
 
-
+// ALL DEFINES HERE
 //screen --------------------------------------------------------------
 LiquidCrystal_I2C lcd(0x27, 16, 4);// SCREEN TESTE
 

@@ -103,10 +103,15 @@ void setup() {
 
  // sound_volume_screen();
 
- // sound_settings_screen();
+// sound_settings_screen();
 
- callibrate();
+ //Calibrate();
 
+ //Calibrate_feedback();
+ 
+ //Calibrate_loading();
+ 
+ // History();
 
 }
 
@@ -506,8 +511,8 @@ void Error_screen(void){
 }
 */
 
- 
-/*
+ /*
+
 void sound_settings_screen(void){
 
   display.clearDisplay();
@@ -540,11 +545,93 @@ void sound_settings_screen(void){
 
 */
 
+/*
+void Calibrate(void){
+display.clearDisplay();
+display.setTextColor(WHITE); 
+
+display.setCursor(5,25); // CURSOR -----------------------------------
+display.write(0x10);
+
+display.setTextSize(1); 
+display.setCursor(35,0);
+display.print("Callibrate");
+  
+display.setTextSize(1); 
+display.setCursor(15,25);
+display.print("Start Calibration");  
+
+display.setCursor(15,35);   
+display.print("Return");
+
+display.display();
+delay(50);
+
+*/
+
+/*
+void Calibrate_loading(void){
+  display.clearDisplay();
+  display.setTextColor(WHITE); 
+  display.setTextSize(2);
+  display.setCursor(8,5); 
+  display.write("Dropping");
+
+  display.setCursor(13,25); 
+  display.write("food...");
+
+  display.setTextSize(1);
+  display.setCursor(50,50);
+  display.write("Wait");
+
+  display.display();
+  delay(50);
+}
+*/
+
+/*
+void Calibrate_feedback(void){
+  display.clearDisplay();
+  display.setTextColor(WHITE); 
+  display.setTextSize(2);
+  display.setCursor(25,5); 
+  display.write("Remove");
+
+  display.setCursor(35,25); 
+  display.write("food");
+
+  display.setTextSize(1);
+  display.setCursor(5,50);
+  display.write("Press when finished");
+
+  display.display();
+  delay(50);
+}
+*/
 
 
-
-
-
+/*
+void History(void){
+  display.clearDisplay();
+  display.setTextColor(WHITE); 
+  
+  display.setTextSize(1);
+  display.setCursor(40,5); 
+  display.write("History");
+  display.setCursor(0,15); 
+  display.write("20/04   08:00   107g");
+  display.setCursor(0,25); 
+  display.write("19/04   16:30   196g");
+  display.setCursor(0,35); 
+  display.write("19/04   12:00   102g");
+  display.setCursor(0,45); 
+  display.write("18/04   12:00   134g");
+  display.setCursor(0,55); 
+  display.write("18/04   08:00   100g");
+  display.display();
+  delay(50);
+}
+*/
 
 
 // FROM THE LIBRARIE EXAMPLE ===================================================
@@ -570,23 +657,5 @@ void testdrawchar(void) {
 }
 */
 
-void callibrate(void){
-display.clearDisplay();
-display.setTextColor(WHITE); 
- display.setCursor(5,25); // CURSOR -----------------------------------
-  display.write(0x10);
-
-display.setTextSize(1); 
-display.setCursor(35,0);
-display.print("Callibrate");
-  
-display.setTextSize(1); 
-display.setTextColor(WHITE); 
-display.setCursor(15,25);
-display.print("Start Calibration");  
-
-display.setCursor(15,35);   
-display.print("Return");
 
 
-}

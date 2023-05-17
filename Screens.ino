@@ -427,3 +427,26 @@ void testdrawchar(void) {
   delay(2000);
 }
 */
+
+oid callibrate(void){
+display.clearDisplay();
+display.setTextColor(WHITE); 
+
+
+display.setTextSize(2); 
+display.setCursor(38,0);
+display.print("Callibrate");
+  
+display.setTextSize(1); 
+display.setTextColor(BLACK, WHITE); 
+display.setCursor(38,22);
+display.print("Start Calibration");  
+
+
+  display.setCursor(110,35); // RETURN ---------------------------------
+  display.write(0x1B);
+ 
+  display.display();
+  delay(50);
+
+}

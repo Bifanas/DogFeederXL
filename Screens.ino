@@ -93,6 +93,21 @@ void setup() {
 
  // Schedule_remove();
 
+
+
+ // Calibrated_screen();
+
+ // Error_screen();
+
+ // sound_screen();
+
+ // sound_volume_screen();
+
+ // sound_settings_screen();
+
+ callibrate();
+
+
 }
 
 void loop() {
@@ -115,7 +130,8 @@ void Home_screen(void) {
   //display.print(clock.year);
   
   display.setTextSize(2);   // CURENT TIME -------------------------------
-  display.setCursor(65 , 0);   
+  display.setCursor(65 , 0);
+
   display.print("14:00");
   
   //display.print(clock.hours);
@@ -175,8 +191,8 @@ void Settings_screen(void){
   display.setCursor(15,25);   // CALIBRATE------------------------------
   display.print("Calibrate");  
 
-  display.setCursor(15,35);   // TREAT ---------------------------------
-  display.print("Treat"); 
+  display.setCursor(15,35);   // INFORMATION ---------------------------
+  display.print("Information"); 
 
   display.setCursor(15,45);   // SOUND ---------------------------------
   display.print("Sound"); 
@@ -404,6 +420,132 @@ void Schedule_remove(void){
 }
 */
 
+/*
+void Calibrated_screen(void){
+  display.clearDisplay();
+  display.setTextColor(WHITE); 
+  display.setTextSize(2);
+  display.setCursor(5,25); // NOT FOUND -----------------------------------
+  display.write("CALIBRATED");
+  display.setTextSize(1);
+
+
+  display.display();
+  delay(50);
+}
+*/
+
+/*
+void Error_screen(void){
+  display.clearDisplay();
+  display.setTextColor(WHITE); 
+  display.setTextSize(2);
+  display.setCursor(5,25); // NOT FOUND -----------------------------------
+  display.write("NOT FOUND!");
+
+  display.setTextSize(1);
+  display.setCursor(110,55); // RETURN -----------------------------------
+  display.write(0x1B);
+
+  display.display();
+  delay(50);
+}
+*/
+
+/*
+ void sound_screen(void){
+
+  display.clearDisplay();
+  display.setTextColor(WHITE); 
+
+  display.setCursor(5,15); // CURSOR -----------------------------------
+  display.write(0x10);
+     
+  display.setCursor(35,0);   // HEADER ---------------------------------
+  display.print("Sound:"); 
+
+  display.setCursor(15,15);   // CHOOSE THE SOUND--------------------- 
+  display.print("Choose sound");  
+
+  display.setTextColor(WHITE); 
+  display.setCursor(15,25);   // Volume --------------------------
+  display.print("Volume"); 
+
+  display.setCursor(110,35); // RETURN ---------------------------------
+  display.write(0x1B);
+  display.setCursor(15,35);   // Volume --------------------------
+  display.print("Return");
+ 
+  display.display();
+  delay(50);
+
+ }
+*/
+
+/*
+ void sound_volume_screen(void){
+
+  display.clearDisplay();
+  display.setTextColor(WHITE); 
+
+  display.setCursor(45,0);   // HEADER ---------------------------------
+  display.print("Volume:"); 
+
+
+  display.setTextSize(2);
+  display.setCursor(52,25); // VOLUME -----------------------------------
+  display.write("10");
+
+
+  display.setTextSize(1);
+  display.setCursor(110,55); // RETURN -----------------------------------
+  display.write(0x1B);
+
+  display.display();
+  delay(50);
+}
+*/
+
+ 
+/*
+void sound_settings_screen(void){
+
+  display.clearDisplay();
+  display.setTextColor(WHITE); 
+
+  display.setCursor(5,15); // CURSOR -----------------------------------
+  display.write(0x10);
+     
+  display.setCursor(15,0);   // HEADER ---------------------------------
+  display.print("Choose sound:"); 
+
+  display.setCursor(15,15);   // SOUND 1--------------------- 
+  display.print("Sound 1");  
+
+  display.setCursor(15,25);   // SOUND 2 --------------------------
+  display.print("Sound 2"); 
+
+    display.setCursor(15,35);   // SOUND 3 --------------------------
+  display.print("Sound 3"); 
+
+  display.setCursor(110,45); // RETURN ---------------------------------
+  display.write(0x1B);
+  display.setCursor(15,45);   // Volume --------------------------
+  display.print("Return");
+ 
+  display.display();
+  delay(50);
+
+  }
+
+*/
+
+
+
+
+
+
+
 
 // FROM THE LIBRARIE EXAMPLE ===================================================
 
@@ -428,25 +570,23 @@ void testdrawchar(void) {
 }
 */
 
-oid callibrate(void){
+void callibrate(void){
 display.clearDisplay();
 display.setTextColor(WHITE); 
+ display.setCursor(5,25); // CURSOR -----------------------------------
+  display.write(0x10);
 
-
-display.setTextSize(2); 
-display.setCursor(38,0);
+display.setTextSize(1); 
+display.setCursor(35,0);
 display.print("Callibrate");
   
 display.setTextSize(1); 
-display.setTextColor(BLACK, WHITE); 
-display.setCursor(38,22);
+display.setTextColor(WHITE); 
+display.setCursor(15,25);
 display.print("Start Calibration");  
 
+display.setCursor(15,35);   
+display.print("Return");
 
-  display.setCursor(110,35); // RETURN ---------------------------------
-  display.write(0x1B);
- 
-  display.display();
-  delay(50);
 
 }

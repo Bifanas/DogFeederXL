@@ -175,8 +175,8 @@ void Settings_screen(void){
   display.setCursor(15,25);   // CALIBRATE------------------------------
   display.print("Calibrate");  
 
-  display.setCursor(15,35);   // INFORMATION ---------------------------
-  display.print("Information"); 
+  display.setCursor(15,35);   // TREAT ---------------------------------
+  display.print("Treat"); 
 
   display.setCursor(15,45);   // SOUND ---------------------------------
   display.print("Sound"); 

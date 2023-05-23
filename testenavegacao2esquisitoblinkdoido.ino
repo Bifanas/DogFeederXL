@@ -153,6 +153,102 @@ void Schedule_options() {
   lcd.print("Back");
 }
 
+void Schedule_time_set() {
+  lcd.clear();
+  lcd.setCursor(12, 0);
+  lcd.print("New");
+ 
+  lcd.setCursor(2, 0);
+  lcd.print("Time:");
+
+  lcd.setCursor(12, 0);
+  lcd.print("8:00:");
+ 
+  lcd.setCursor(2,1);
+  lcd.print("Portion");
+
+  lcd.setCursor(12, 1);
+  lcd.print("150 g");
+
+  lcd.setCursor(2,2);
+  lcd.print("Slow");
+
+  lcd.setCursor(12, 2);
+  lcd.print("On");
+
+  lcd.setCursor(2, 3);
+  lcd.print("Back");
+}
+
+void Schedule_newtime_set() {
+  lcd.clear();
+  lcd.setCursor(12, 0);
+  lcd.print("Edit");
+ 
+  lcd.setCursor(2, 0);
+  lcd.print("Time:");
+
+  lcd.setCursor(12, 0);
+  lcd.print("8:00:");
+ 
+  lcd.setCursor(2,1);
+  lcd.print("Portion");
+
+  lcd.setCursor(12, 1);
+  lcd.print("150 g");
+
+  lcd.setCursor(2,2);
+  lcd.print("Slow");
+
+  lcd.setCursor(12, 2);
+  lcd.print("On");
+
+  lcd.setCursor(2, 3);
+  lcd.print("Back");
+}
+
+void Time_set() {
+  lcd.clear();
+   
+  lcd.setCursor(2, 0);
+  lcd.print("Time:");
+ 
+  lcd.setCursor(2,1);
+  lcd.print("8:00");
+
+  lcd.setCursor(2, 3);
+  lcd.print("Back");
+}
+
+void Portion_set() {
+  lcd.clear();
+   
+  lcd.setCursor(2, 0);
+  lcd.print("Portion:");
+ 
+  lcd.setCursor(2,1);
+  lcd.print("150 g");
+
+  lcd.setCursor(2, 3);
+  lcd.print("Back");
+}
+
+void Slow_Mode() {
+  lcd.clear();
+   
+  lcd.setCursor(2, 0);
+  lcd.print("Slow Mode");
+ 
+  lcd.setCursor(2,1);
+  lcd.print("On");
+
+  lcd.setCursor(2,2);
+  lcd.print("Off");
+
+  lcd.setCursor(2,3);
+  lcd.print("Back");
+}
+
 void loop() {
   static int click_last = HIGH;
   click = digitalRead(switchPin);
@@ -230,6 +326,16 @@ void loop() {
       }
       line = Cursor_nav();
       
+      if(click==LOW && line==1){
+        st=4;
+        refresh_screen=true;
+        delay(200);
+      }
+      if(click==LOW && line==2){
+        st=5;
+        refresh_screen=true;
+        delay(200);
+      }
       if(click==LOW && line==3){
         st=2;
         refresh_screen=true;
@@ -242,7 +348,140 @@ void loop() {
         }
       }
       break;
+      case 4: // time set
+      if (refresh_screen) {
+        Schedule_time_set();
+        refresh_screen=false;
+        timer = 0;
+      }
+      line = Cursor_nav();
       
+      if(click==LOW && line==0){
+        st=6;
+        refresh_screen=true;
+        delay(200);
+      }
+       if(click==LOW && line==1){
+        st=7;
+        refresh_screen=true;
+        delay(200);
+      }
+       if(click==LOW && line==2){
+        st=8;
+        refresh_screen=true;
+        delay(200);
+      }
+      if(click==LOW && line==3){
+        st=3;
+        refresh_screen=true;
+        delay(200);
+      }
+      else{
+        if(timer>=TIMEOUT_COUNT){
+          st = 0;
+          refresh_screen=true;
+        }
+      }
+      break;
+
+      case 5: // new time set
+      if (refresh_screen) {
+        Schedule_newtime_set();
+        refresh_screen=false;
+        timer = 0;
+      }
+      line = Cursor_nav();
+      
+      if(click==LOW && line==0){
+        st=6;
+        refresh_screen=true;
+        delay(200);
+      }
+       if(click==LOW && line==1){
+        st=7;
+        refresh_screen=true;
+        delay(200);
+      }
+       if(click==LOW && line==2){
+        st=8;
+        refresh_screen=true;
+        delay(200);
+      }
+       if(click==LOW && line==3){
+        st=3;
+        refresh_screen=true;
+        delay(200);
+      }
+      else{
+        if(timer>=TIMEOUT_COUNT){
+          st = 0;
+          refresh_screen=true;
+        }
+      }
+      break;
+      
+      case 6: // time set
+      if (refresh_screen) {
+        Time_set();
+        refresh_screen=false;
+        timer = 0;
+      }
+      line = Cursor_nav();
+      
+      if(click==LOW && line==3){
+        st=4;
+        refresh_screen=true;
+        delay(200);
+      }
+      else{
+        if(timer>=TIMEOUT_COUNT){
+          st = 0;
+          refresh_screen=true;
+        }
+      }
+      break;
+
+      case 7: // portion set
+      if (refresh_screen) {
+        Portion_set();
+        refresh_screen=false;
+        timer = 0;
+      }
+      line = Cursor_nav();
+      
+      if(click==LOW && line==3){
+        st=4;
+        refresh_screen=true;
+        delay(200);
+      }
+      else{
+        if(timer>=TIMEOUT_COUNT){
+          st = 0;
+          refresh_screen=true;
+        }
+      }
+      break;
+
+      case 8: // slow mode
+      if (refresh_screen) {
+        Slow_Mode();
+        refresh_screen=false;
+        timer = 0;
+      }
+      line = Cursor_nav();
+      
+      if(click==LOW && line==3){
+        st=4;
+        refresh_screen=true;
+        delay(200);
+      }
+      else{
+        if(timer>=TIMEOUT_COUNT){
+          st = 0;
+          refresh_screen=true;
+        }
+      }
+      break;
   }
 
   delay(15);

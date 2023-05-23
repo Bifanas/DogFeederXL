@@ -109,7 +109,7 @@ void Home_screen() {
   lcd.print("Next meal: 16:30");
 }
 
-int Settings_screen() {
+void Settings_screen() {
   lcd.clear();
   lcd.setCursor(12,0);
   lcd.print("Settings");
@@ -249,6 +249,61 @@ void Slow_Mode() {
   lcd.print("Back");
 }
 
+void Schedule_remove(void) {
+  lcd.clear();
+  lcd.setCursor(2, 0);  // HEADER ---------------------------------
+  lcd.print("Remove ");
+  lcd.print("08:00");  //aqui vai a variavel
+  lcd.print(" ?");
+  lcd.setCursor(2, 1);  //yes
+  lcd.print("Yes");
+  lcd.setCursor(2, 2);  // No
+  lcd.print("No");
+  lcd.setCursor(2, 3);  // RETURN ---------------------------------
+  lcd.print("Back");
+}
+
+void Not_found(void) {
+
+  lcd.clear();
+  lcd.setCursor(8, 1);  // HEADER ---------------------------------
+  lcd.print("o_o");
+  lcd.setCursor(5, 2);  //yes
+  lcd.print("Not Found");
+}
+
+void Calibrate(void) {
+  lcd.clear();
+  lcd.setCursor(2, 0);
+  lcd.print("Callibrate:");
+  lcd.setCursor(2, 2);
+  lcd.print("Start");
+  lcd.setCursor(2, 3);
+  lcd.print("Back");
+}
+
+void Calibrate_DF(void) {
+  lcd.clear();
+  lcd.setCursor(2, 1);
+  lcd.print("Dropping food...");
+  lcd.setCursor(7, 3);
+  lcd.print("wait");
+}
+
+void Calibrate_TFO(void) {
+  lcd.clear();
+  lcd.setCursor(1, 1);
+  lcd.print("Take the food out!");
+}
+
+void CalibrateD(void) {
+  lcd.clear();
+  lcd.setCursor(4, 1);
+  lcd.print("CALIBRATED!");
+  lcd.setCursor(7, 2);
+  lcd.print(";)");
+}
+
 void loop() {
   static int click_last = HIGH;
   click = digitalRead(switchPin);
@@ -281,6 +336,11 @@ void loop() {
         refresh_screen=true;
         delay(200);
       } 
+      if (click == LOW && line == 2) { //calibration
+        st = 11;
+        refresh_screen = true;
+        delay(200);
+      }
       
       else{
         if(timer>=TIMEOUT_COUNT){
@@ -339,6 +399,11 @@ void loop() {
       if(click==LOW && line==3){
         st=2;
         refresh_screen=true;
+        delay(200);
+      }
+      if (click == LOW && line == 0) { //Remove
+        st = 9;
+        refresh_screen = true;
         delay(200);
       }
       else{
@@ -479,6 +544,131 @@ void loop() {
         if(timer>=TIMEOUT_COUNT){
           st = 0;
           refresh_screen=true;
+        }
+      }
+      break;
+      case 9:  // schedule remove
+      if (refresh_screen) {
+        Schedule_remove();
+        refresh_screen = false;
+        timer = 0;
+      }
+      line = Cursor_nav();
+
+      if (click == LOW && line == 3) {
+        st = 3;
+        refresh_screen = true;
+        delay(200);
+      }
+      if (click == LOW && line == 1 || click == LOW && line == 2) {
+        st = 10;
+        refresh_screen = true;
+        delay(200);
+      } else {
+        if (timer >= TIMEOUT_COUNT) {
+          st = 0;
+          refresh_screen = true;
+        }
+      }
+      break;
+
+    case 10:  // Not found
+      if (refresh_screen) {
+        Not_found();
+        refresh_screen = false;
+        timer = 0;
+      }
+
+      if (click == LOW) {
+        st = 9;
+        refresh_screen = true;
+        delay(200);
+      } else {
+        if (timer >= TIMEOUT_COUNT) {
+          st = 0;
+          refresh_screen = true;
+        }
+      }
+      break;
+
+    case 11:  // CALIBRATE
+      if (refresh_screen) {
+        Calibrate();
+        refresh_screen = false;
+        timer = 0;
+      }
+      line = Cursor_nav();
+
+      if (click == LOW && line == 3) {
+        st = 1;
+        refresh_screen = true;
+        delay(200);
+      }
+      if (click == LOW && line == 2) {
+        st = 12;
+        refresh_screen = true;
+        delay(200);
+      } else {
+        if (timer >= TIMEOUT_COUNT) {
+          st = 0;
+          refresh_screen = true;
+        }
+      }
+      break;
+
+    case 12:  // Calibrate_Droppingfood
+      if (refresh_screen) {
+        Calibrate_DF();
+        refresh_screen = false;
+        timer = 0;
+      }
+
+      if (click == LOW) {
+        st = 13;
+        refresh_screen = true;
+        delay(200);
+      } else {
+        if (timer >= TIMEOUT_COUNT) {
+          st = 0;
+          refresh_screen = true;
+        }
+      }
+      break;
+
+   case 13:  // Calibrate_TakeFoodOut
+      if (refresh_screen) {
+        Calibrate_TFO();
+        refresh_screen = false;
+        timer = 0;
+      }
+     
+      if (click == LOW) {
+        st = 14;
+        refresh_screen = true;
+        delay(200);
+      } else {
+        if (timer >= TIMEOUT_COUNT) {
+          st = 0;
+          refresh_screen = true;
+        }
+      }
+      break;
+
+    case 14:  // CalibrateD
+      if (refresh_screen) {
+        CalibrateD();
+        refresh_screen = false;
+        timer = 0;
+      }
+     
+      if (click == LOW) {
+        st = 0;
+        refresh_screen = true;
+        delay(200);
+      } else {
+        if (timer >= TIMEOUT_COUNT) {
+          st = 0;
+          refresh_screen = true;
         }
       }
       break;

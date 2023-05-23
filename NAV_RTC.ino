@@ -2,7 +2,7 @@
 ################### INCLUDES AND DEFINES ###################################*/
   #include <Wire.h>
   #include <LiquidCrystal_I2C.h>
-  #include <RTClib.h> // RTC lib
+  #include <uRTCLib.h> // RTC lib
 
   #define TIMEOUT_COUNT 1000 // aumentei pra 3000 pq tava dando ruim
 
@@ -13,7 +13,10 @@
 ################### VARIABLES OR FIXED #######################################*/
   // RTC ======================================================================
 
-  RTC_DS1307 RTC;
+  uRTCLib rtc(0x68);
+
+  char daysOfTheWeek[7][12] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
+
 
   // LCD =======================================================================
 
@@ -61,15 +64,17 @@
     lcd.setBacklight(HIGH); // Turn on the backlight
 
     //RTC
-    Wire.begin();
-    RTC.begin();
-  if (! RTC.isrunning()) {
-    Serial.println("RTC is NOT running!");
-    // following line sets the RTC to the date & time this sketch was compiled
-    RTC.adjust(DateTime(__DATE__, __TIME__));
+    URTCLIB_WIRE.begin();
+
+    // Comment out below line once you set the date & time.
+  // Following line sets the RTC with an explicit date & time
+  // for example to set January 13 2022 at 12:56 you would call:
+  // rtc.set(0, 13, 21, 3, 23, 5, 23);
+  // rtc.set(second, minute, hour, dayOfWeek, dayOfMonth, month, year)
+  // set day of week (1=Sunday, 7=Saturday)
   }
 
-  }
+  
 
 /*########################### END SETUP #####################################
 ##############################################################################*/
@@ -146,15 +151,15 @@
 ############################ TELAS #################################################*/
 
   void Home_screen() {
-    // RTC
-    DateTime now = RTC.now();
+    
+    
     lcd.clear();
     lcd.setCursor(5, 0);
-    lcd.print(now.day(), DEC); lcd.print("/"); lcd.print(now.month(), DEC);lcd.print("/");lcd.print(now.year(), DEC);
+    lcd.print(rtc.day()); lcd.print("/"); lcd.print(rtc.month());lcd.print("/");lcd.print(rtc.year());
     // lcd.setCursor(17, 0);
     // lcd.print(rtc.dayOfWeek()-1);
     lcd.setCursor(7, 1);
-    lcd.print(now.hour(), DEC);lcd.print(":");lcd.print(now.minute(), DEC);
+    lcd.print(rtc.hour());lcd.print(":");lcd.print(rtc.minute());
     lcd.setCursor(2, 3);
     lcd.print("Next meal: 16:30");
     
@@ -408,6 +413,8 @@
     static int click_last = HIGH;
     click = digitalRead(switchPin);
 
+    // RTC
+    rtc.refresh();
     
 
     // SWITCH SCREENS

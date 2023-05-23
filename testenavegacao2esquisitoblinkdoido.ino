@@ -138,6 +138,21 @@ void Schedule_screen() {
   lcd.print("16:30");
 }
 
+void Schedule_options() {
+  lcd.clear();
+  lcd.setCursor(2, 0);
+  lcd.print("Remove");
+ 
+  lcd.setCursor(2, 1);
+  lcd.print("Edit");
+ 
+  lcd.setCursor(2, 2);
+    lcd.print("New");
+
+  lcd.setCursor(2, 3);
+  lcd.print("Back");
+}
+
 void loop() {
   static int click_last = HIGH;
   click = digitalRead(switchPin);
@@ -187,10 +202,36 @@ void loop() {
         refresh_screen=false;
         timer = 0;
       }
-      //line = Cursor_nav();
+      line = Cursor_nav();
       
-      if(click==LOW){
+      if(click==LOW && line==0){
         st=1;
+        refresh_screen=true;
+        delay(200);
+      }
+      if(click==LOW && line==1){
+        st=3;
+        refresh_screen=true;
+        delay(200);
+      }
+      else{
+        if(timer>=TIMEOUT_COUNT){
+          st = 0;
+          refresh_screen=true;
+        }
+      }
+      break;      
+      
+      case 3: // schedule options
+      if (refresh_screen) {
+        Schedule_options();
+        refresh_screen=false;
+        timer = 0;
+      }
+      line = Cursor_nav();
+      
+      if(click==LOW && line==3){
+        st=2;
         refresh_screen=true;
         delay(200);
       }
@@ -201,6 +242,7 @@ void loop() {
         }
       }
       break;
+      
   }
 
   delay(15);

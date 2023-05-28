@@ -1,7 +1,7 @@
 //Constants-----------------------------------------------------
 
 
-const int Sleepmotor = 2;
+const int Enable = 2;
 const int step = 3;
 const int dirPin = 4;
 
@@ -14,7 +14,7 @@ void stepper(float Screw_turns, int motorpin, bool direction) {
 
   int steps = Screw_turns * full_turn;  // get how many steps
   
-  digitalWrite(Sleepmotor, HIGH);  
+  digitalWrite(Enable, LOW);  
   digitalWrite(dirPin, direction);
 
   for (int x = 0; x < steps; x++) {
@@ -23,7 +23,7 @@ void stepper(float Screw_turns, int motorpin, bool direction) {
     digitalWrite(motorpin, LOW);
     delayMicroseconds(speed);
   }
-  digitalWrite(Sleepmotor, LOW);
+  digitalWrite(Enable, HIGH);
 }
 
 
@@ -40,25 +40,21 @@ void feed( int cal,int amount, bool slow) {
   }
 }
 
+const int calibrated = 100; // only for testing
+  const int buttom_1 = 13;
+  int amount = 200;
 
 void setup() {
   pinMode(step, OUTPUT);
   pinMode(dirPin, OUTPUT);
-  pinMode(Sleepmotor, OUTPUT);
-  pinMode(buttom_1, INPUT_PULLUP);
-
-  const int calibrated = 100; // only for testing
-  const int buttom_1 = 13;
-  int amount = 200;
+  pinMode(Enable, OUTPUT);
 
 }
 
 void loop() {
 
-  bool buttom1 = digitalRead(buttom_1);
-
-  if (buttom1 == 0) {
-    // stepper(5, step, 0);   
+ 
     feed(calibrated, amount,0);
-  }
+    delay(1000);
+ 
 }

@@ -1,24 +1,24 @@
 /*###########################################################################
 ################### INCLUDES AND DEFINES ####################################*/
   
-  #include <Wire.h>
-  #define TIMEOUT_COUNT 1000  // timeout to return to main screen
+  #include <Wire.h> // Include Wire library for I2C communication
+  #define TIMEOUT_COUNT 1000  // Set timeout constant to be used for returning to the main screen
 
   // SCREEN
-  #include <LiquidCrystal_I2C.h>
+  #include <LiquidCrystal_I2C.h>  // Include LiquidCrystal_I2C library for controlling LCD display
 
   //RTC
-  #include <uRTCLib.h>  // RTC lib
+  #include <uRTCLib.h>  // Include uRTCLib library for managing real-time clock
 
   // SOM
-  #include <SoftwareSerial.h>
-  #include "RedMP3.h"   //MP3 maroto
-  #define ARDUINO_RX 7  //mp3
-  #define ARDUINO_TX 8  //mp3
+  #include <SoftwareSerial.h> // Include SoftwareSerial library to create serial port on digital pins
+  #include "RedMP3.h"   // Include the RedMP3 library for MP3 functionality
+  #define ARDUINO_RX 7  // Define digital pin 7 as RX for MP3 communication
+  #define ARDUINO_TX 8  // Define digital pin 8 as TX for MP3 communication
 
   // TEMPHUMIDITY
-  #include <dht.h>
-  #define dataPin 9
+  #include <dht.h> // Include the dht library for controlling DHT22 sensor
+  #define dataPin 9 // Define digital pin 9 for data transmission from DHT22 sensor
 
 
 
@@ -28,55 +28,44 @@
 /*###########################################################################
 ################### VARIABLES OR FIXED ######################################*/
   // RTC 
-  uRTCLib rtc(0x68);  //a4 e a5 pinos do rtc
-  char auxtime[6][3];
+  uRTCLib rtc(0x68);  // Instantiate uRTCLib object for RTC communication (0x68 is the default)
+  char auxtime[6][3]; // Create a 2D character array to hold time data
   
   // LCD 
-  LiquidCrystal_I2C lcd(0x27, 16, 4);
+  LiquidCrystal_I2C lcd(0x27, 16, 4); //Instantiate LiquidCrystal_I2C object to interface with the LCD (0x27 is the default)
 
   // ENCODER 
-  int switchPin = 13;  // button pin KEY
-  int click = HIGH;    // button value
+  int switchPin = 13;  // Define digital pin 13 as switch pin (encoder button)
+  int click = HIGH;    // Initialize the click variable as HIGH
 
-  int pinA = 12;                         // Rotary encoder Pin S1
-  int pinB = 11;                         // Rotary encoder Pin S2
-  int pinAstateCurrent = LOW;            // Current state of Pin S1
-  int pinAStateLast = pinAstateCurrent;  // Last read value of Pin S2
+  int pinA = 12;                         // Define pinA for Rotary encoder (input S1)
+  int pinB = 11;                         // Define pinB for Rotary encoder (input S2)
+  int pinAstateCurrent = LOW;            // Initialize the current state of Pin S1 as LOW
+  int pinAStateLast = pinAstateCurrent;  // Initialize the last read value of Pin S2 as the current state of Pin S1
 
   // SOM
   MP3 mp3(ARDUINO_RX, ARDUINO_TX);  //MP3
   int8_t musica1 = 0x01;            //primeira música do cartão SD
   int8_t musica2 = 0x02;            //segunda música do cartão SD
-  int8_t musica3 = 0x03;            //terceira música do cartão SD
   int8_t folderName = 0x01;         //pasta do cartão
   int8_t lastVolume = 20;           //volume atual
-  int ss = musica1;                 // sond selected default option musica1
+  int ss = musica1;                 // sound selected default option musica1
 
   // MOTOR
-  const int Enable = 2;
-  const int step = 3;
-  const int dirPin = 4;
-  int calibratedaux = 100;     // only for calibration
-  int calibrated_value = 100;  // this one for feed
-  const int buttom_1 = 13;
-  int amount = 200;
+  const int Enable = 2;       // Define digital pin 2 as Enable pin
+  const int step = 3;         // Define digital pin 3 as step pin
+  const int dirPin = 4;       // Define digital pin 4 as direction pin
+  int calibratedaux = 100;     // Auxiliary value for calibration
+  int calibrated_value = 100;  // Value to store calibrated values for feed 
+  int amount = 200;             // Default feed amount
 
   //TEMPHUMIDITY
   dht DHT;
+   // In the line below, the function `read22(dataPin)` from the DHT library is being used to read the temperature and humidity values from the sensor
   float temperature, humidity;
 
-  //AUX CHAR
-  byte Ossinho[8] = {
-    0b00000,
-    0b01010,
-    0b00100,
-    0b00100,
-    0b00100,
-    0b00100,
-    0b01010,
-    0b00000
-  };
-
+  // CUSTOM CHARACTERS FOR THE LCD SCREEN
+//GARFINHO  
   byte garfo[8] = {
     0b00000,
     0b01010,
@@ -88,6 +77,7 @@
     0b00000
   };
 
+  // FAQUINHA
   byte faca[8] = {
     0b00000,
     0b00100,
@@ -100,18 +90,19 @@
   };
 
 
-  // AUX 
+  // AUX VARIABLES
   int st = 0;  //setting state 0 - main screen state
 
   bool refresh_screen = true;  // impede q fique printando a tela 900x até ir pra proxima (NÃO FICA PISCANDO)
 
-  int encoder = 0;
+  int encoder = 0;            // Rotary encoder reading, default to zero
 
-  int line = 0;
+  int line = 0;               // Current line of the LCD screen
 
   int timer = 0;  // pra contar o num de ciclos até voltar pra tela inicial
 
   int meal[2][4] = { { 8, 30, 50, 0 }, { 9, 40, 0, 0 } }; // meals settings
+  //HOUR, MINUTE, PORTION AND SLOW (ON/OFF)
   int x = 0; //aux to meals settings
 
   char slowmode[2][4] = { "off", " on" }; //slow mode
@@ -128,7 +119,7 @@
 
   void setup() {
 
-    Serial.begin(9600);  // Initialise the serial monitor
+    Serial.begin(9600);  // Initialise the serial communication
 
     // ENCODER
     pinMode(switchPin, INPUT_PULLUP);  // Enable the switchPin as input with a PULLUP resistor
@@ -171,11 +162,11 @@
 ##################### AUX FUNCTIONS #########################################*/
   // ENCODER 
     int read_encoder() { // Read and interpret rotary encoder inputs because it wans't working on the other thing
-      int movement = 0;                          //
+      int movement = 0;                          //  Initializes a variable to hold the encoder movement
       int pinAstateCurrent = digitalRead(pinA);  // Read the current state of pinA
 
       // If the encoder knob was turned
-      if ((pinAStateLast == LOW) && (pinAstateCurrent == HIGH)) {  // Check the direction of the turn
+      if ((pinAStateLast == LOW) && (pinAstateCurrent == HIGH)) {  // hecks if pinA state has transitioned from LOW to HIGH, which indicates that the encoder was turned
         if (digitalRead(pinB) == HIGH) {
           movement = 1;  // direção do relogiooo
         } else {
@@ -188,7 +179,7 @@
     }
 
   
-    int Cursor_nav() { //nova função de navegação do encoder
+    int Cursor_nav() { //nova função de navegação do encoder, funciona apenas na interface
       static int aux = 0;        //onde o encoder tá
       static int aux_last = -1;  // will store the last position of aux, I should write everything in one language
 
@@ -201,10 +192,10 @@
       // Read encoder
       int encoder_move = read_encoder();  //determines if the rotary encoder has moved
 
-      if (encoder_move == 1) {
+      if (encoder_move == 1) { //se for na direção do relógio é positivo
         aux++;
         if (aux > 3) aux = 0;
-      } else if (encoder_move == -1) {
+      } else if (encoder_move == -1) { //se for no oposto do relógio é negativo
         aux--;
         if (aux < 0) aux = 3;  //volta pra primeira linha se atingir o 3
       }
@@ -219,7 +210,8 @@
         lcd.print("  ");
         lcd.setCursor(0, 3);
         lcd.print("  ");
-
+        
+        // Set the cursor to the new position and print an arrow
         lcd.setCursor(0, aux);
         lcd.print("->");
 
@@ -230,7 +222,7 @@
       return aux;
     }
 
-    int encoderChangehour(int hour) {     //ajustar volume
+    int encoderChangehour(int hour) {     //ajustar hora
       int encoder_move = read_encoder();  //determines if the rotary encoder has moved
       if (encoder_move == 1) {
         hour++;
@@ -238,16 +230,16 @@
         hour--;
       }
 
-      hour = constrain(hour, 0, 23);
+      hour = constrain(hour, 0, 23);    // Constrain the hour value between 0 and 23 to represent valid hours in a day
 
       // Only print cursor if it moved
       if (hour != meal[x][0]) {
-        meal[x][0] = hour;
+        meal[x][0] = hour;     // Update the stored hour
       }
-      return hour;
+      return hour;            // Return the new hour value
     }
 
-    int encoderChangeminute(int minute) {  //ajustar volume
+    int encoderChangeminute(int minute) {  //ajustar minuto
       int encoder_move = read_encoder();   //determines if the rotary encoder has moved
       if (encoder_move == 1) {
         minute++;
@@ -259,12 +251,12 @@
 
       // Only print cursor if it moved
       if (minute != meal[x][1]) {
-        meal[x][1] = minute;
+        meal[x][1] = minute;            // Update the stored minute
       }
       return minute;
     }
 
-    int encoderChangeportion(int portion) {  //ajustar volume
+    int encoderChangeportion(int portion) {  //ajustar porção
       int encoder_move = read_encoder();     //determines if the rotary encoder has moved
       if (encoder_move == 1) {
         portion= portion+10;
@@ -281,10 +273,10 @@
       return portion;
     }
 
-    int encoderCalibratePortion(int CP) {  //ajustar volume
+    int encoderCalibratePortion(int CP) {  //ajustar calibrated portion
       int encoder_move = read_encoder();   //determines if the rotary encoder has moved
       if (encoder_move == 1) {
-        CP= CP+10;
+        CP= CP+10;              //Incrementa de 10 em 10
       } else if (encoder_move == -1) {
         CP= CP-10;
       }
@@ -324,20 +316,20 @@
     void stepper(float Screw_turns, int motorpin, bool direction) {
 
       int speed = 830;  //NEEDS TO BE CALIBRATED !!!
-      int full_turn = 4000;
+      int full_turn = 4000;  // A full turn of the motor corresponds to 4000 steps
 
       int steps = Screw_turns * full_turn;  // get how many steps
 
-      digitalWrite(Enable, LOW);
-      digitalWrite(dirPin, direction);
+      digitalWrite(Enable, LOW);        // Enables the motor driver
+      digitalWrite(dirPin, direction);  // Sets the direction of motor rotation
 
-      for (int x = 0; x < steps; x++) {
+      for (int x = 0; x < steps; x++) {  // Loop for the given number of steps
         digitalWrite(motorpin, HIGH);
         delayMicroseconds(speed);
         digitalWrite(motorpin, LOW);
         delayMicroseconds(speed);
       }
-      digitalWrite(Enable, HIGH);
+      digitalWrite(Enable, HIGH);      // Disables the motor driver after steps are completed
     }
 
 
@@ -357,7 +349,7 @@
   //END MOTOR
 
   //TEMPHUMIDITY
-    void readDHTData(float& temperature, float& humidity) {
+    void readDHTData(float& temperature, float& humidity) { // Reads temperature and humidity
       int readData = DHT.read22(dataPin);
       temperature = DHT.temperature;
       humidity = DHT.humidity;
@@ -372,13 +364,13 @@
   void loop() {
 
     // ENCODER
-    static int click_last = HIGH;
-    click = digitalRead(switchPin);
+    static int click_last = HIGH;   
+    click = digitalRead(switchPin); // Read the state of the switch
 
 
     // RTC
     rtc.refresh();
-
+     // Convert the RTC values to strings and store them in the auxtime array
     itoa(rtc.second(), auxtime[2], 10);
     itoa(rtc.minute(), auxtime[1], 10);
     itoa(rtc.hour(), auxtime[0], 10);
@@ -391,12 +383,15 @@
     readDHTData(temperature, humidity);
 
     // SWITCH SCREENS
+    // Checks the state variable 'st' and updates the display to behave accordingly
     switch (st) {
       case 0:  // main screen
         if (refresh_screen) {
+          // If the screen needs refreshing, call the Home_screen function to display the main screen
           Home_screen();
           refresh_screen = false;  // Only refresh the screen once per state change
           timer = 0;
+          // If it's meal time, trigger the feed function to dispense food
           if (meal[0][0] == auxtime[0] && meal[0][1] == auxtime[1]) {
             feed(calibrated_value, meal[0][2], meal[0][3]);
             mp3.playWithVolume(ss, lastVolume);
@@ -407,7 +402,8 @@
           }
         }
         
-        // next meal time
+        // Calculates next meal time
+        // It looks through the scheduled meal times and selects the one that is next in line
           int proximoHorario = -1;
           int horaatual = (auxtime[0]*100)+auxtime[1];
           int meal1 = (meal[0][0]*100)+meal[0][1];
@@ -420,7 +416,7 @@
               }
           }
           if (proximoHorario != -1) {
-            nextmeal = próximohorário;
+            nextmeal = proximohorario;
           } else {
               mextmeal = mealtimes[0];  
           }
@@ -430,6 +426,7 @@
           refresh_screen = true;
           delay(200);
         } else {
+          // If there's no activity for some time, refresh the screen
           if (timer >= TIMEOUT_COUNT) {
             st = 0;
             refresh_screen = true;
@@ -437,7 +434,7 @@
         }
         break;
 
-      case 1:  // settings screen
+      case 1:  // settings screen, where you can select Treat, Schedule, Calibrate and Sound
         if (refresh_screen) {
           Settings_screen();
           refresh_screen = false;
@@ -476,7 +473,7 @@
 
         break;
 
-      case 2:  // schedule screen
+      case 2:  // schedule screen, where you can select the scheduled hours to edit or remove
         if (refresh_screen) {
           Schedule_screen();
           refresh_screen = false;
@@ -484,18 +481,18 @@
         }
         line = Cursor_nav();
 
-        if (click == LOW && line == 3) {
+        if (click == LOW && line == 3) {    //BACK
           st = 1;
           refresh_screen = true;
           delay(200);
         }
-        if (click == LOW && line == 1) {
+        if (click == LOW && line == 1) {    //SET THE X TO 0, EDIT 
           st = 3;
           x = 0;
           refresh_screen = true;
           delay(200);
         }
-        if (click == LOW && line == 2) {
+        if (click == LOW && line == 2) {    //SET THE X TO 1, EDIT
           st = 3;
           x = 1;
           refresh_screen = true;
@@ -547,23 +544,23 @@
         }
         line = Cursor_nav();
 
-        if (click == LOW && line == 0) {
+        if (click == LOW && line == 0) {    //SET TIME
           st = 5;
           refresh_screen = true;
           delay(200);
         }
 
-        if (click == LOW && line == 1) {
+        if (click == LOW && line == 1) {    //SET PORTION
           st = 7;
           refresh_screen = true;
           delay(200);
         }
-        if (click == LOW && line == 2) {
+        if (click == LOW && line == 2) {    //SLOW MODE     
           st = 8;
           refresh_screen = true;
           delay(200);
         }
-        if (click == LOW && line == 3) {  // back
+        if (click == LOW && line == 3) {    // back
           st = 2;
           refresh_screen = true;
           delay(200);
@@ -595,7 +592,7 @@
 
         if (click == LOW) {
           st = 6;
-          refresh_screen = true;
+          refresh_screen = true;      // GO TO MINUTES
           delay(200);
         } else {
           if (timer >= TIMEOUT_COUNT) {
@@ -623,7 +620,7 @@
         }
 
         if (click == LOW) {
-          st = 4;
+          st = 4;               //GO BACK TO EDIT
           refresh_screen = true;
           delay(200);
         } else {
@@ -653,7 +650,7 @@
 
         if (click == LOW) {
           st = 4;
-          refresh_screen = true;
+          refresh_screen = true;      //GO BACK TO EDIT
           delay(200);
         } else {
           if (timer >= TIMEOUT_COUNT) {
@@ -670,17 +667,17 @@
           timer = 0;
         }
         line = Cursor_nav();
-        if (click == LOW && line == 1) {
+        if (click == LOW && line == 1) {    //ON
           meal[x][3] = 1;
           refresh_screen = true;
           delay(200);
         }
-        if (click == LOW && line == 2) {
+        if (click == LOW && line == 2) {    //OFF
           meal[x][3] = 0;
           refresh_screen = true;
           delay(200);
         }
-        if (click == LOW && line == 3) {
+        if (click == LOW && line == 3) {     //BACK
           st = 4;
           refresh_screen = true;
           delay(200);
@@ -693,19 +690,19 @@
         break;
       case 9:  // schedule remove
         if (refresh_screen) {
-          Schedule_remove();
+          Schedule_remove();      //WANT TO REMOVE THE SCHEDULE?
           refresh_screen = false;
           timer = 0;
         }
         line = Cursor_nav();
 
         if (click == LOW && line == 3) {
-          st = 3;
+          st = 3;                  //BACK TO SCHEDULE OPTIONS
           refresh_screen = true;
           delay(200);
         }
         if (click == LOW && line == 1 || click == LOW && line == 2) {
-          st = 10;
+          st = 10;                  //ERROR SCREEN
           refresh_screen = true;
           delay(200);
         } else {
@@ -716,7 +713,7 @@
         }
         break;
 
-      case 10:  // Not found
+      case 10:  // Not found o_o
         if (refresh_screen) {
           Not_found();
           refresh_screen = false;
@@ -743,12 +740,12 @@
         }
         line = Cursor_nav();
 
-        if (click == LOW && line == 3) {
+        if (click == LOW && line == 3) {    //OPTIONS SCREEN
           st = 1;
           refresh_screen = true;
           delay(200);
         }
-        if (click == LOW && line == 2) {
+        if (click == LOW && line == 2) {    //CALIBRATE DROP
           st = 12;
           refresh_screen = true;
           delay(200);
@@ -765,11 +762,11 @@
           Calibrate_DF();
           refresh_screen = false;
         }
-        for (int i = 0; i <= 1; i++) {
+        for (int i = 0; i <= 1; i++) {  //STEPPER MOTOR
           stepper(1, 3, 1);  //1 turn = 4000 steps
           stepper(0.2, 3, 0);
         }
-        st = 13;
+        st = 13;      //INSERT CALIBRATED PORTION
         refresh_screen = true;
         delay(200);
 
@@ -828,17 +825,17 @@
         }
         line = Cursor_nav();
 
-        if (click == LOW && line == 1) {
+        if (click == LOW && line == 1) {    //CHOOSE SOUND
           st = 16;
           refresh_screen = true;
           delay(200);
         }
-        if (click == LOW && line == 2) {
+        if (click == LOW && line == 2) {    //CHOOSE VOLUME
           st = 17;
           refresh_screen = true;
           delay(200);
         }
-        if (click == LOW && line == 3) {
+        if (click == LOW && line == 3) {    //BACK TO OPTIONS
           st = 1;
           refresh_screen = true;
           delay(200);
@@ -857,19 +854,19 @@
           timer = 0;
         }
         line = Cursor_nav();
-        if (click == LOW && line == 1) {
+        if (click == LOW && line == 1) {      //BIRD MUSIC
           mp3.playWithVolume(musica1, lastVolume);
           ss = musica1;
           refresh_screen = true;
           delay(200);
         }
-        if (click == LOW && line == 2) {
+        if (click == LOW && line == 2) {      //BELL MUSIC
           mp3.playWithVolume(musica2, lastVolume);
           ss = musica2;
           refresh_screen = true;
           delay(200);
         }
-        if (click == LOW && line == 3) {
+        if (click == LOW && line == 3) {      //BACK
           st = 15;
           refresh_screen = true;
           mp3.stopPlay();
@@ -892,7 +889,7 @@
         }
         lastVolume = encoderChangeVolume(lastVolume);
 
-        if (lastVolume != lastPrintedVolume) {
+        if (lastVolume != lastPrintedVolume) {    //CHANGE VOLUME WHEN ROTARY ENCODER MOVES
           lcd.setCursor(7, 2);
           lcd.print("     ");  // To clear previous value
           lcd.setCursor(7, 2);
@@ -900,7 +897,7 @@
           lastPrintedVolume = lastVolume;
         }
 
-        if (click == LOW) {
+        if (click == LOW) {       //BACK
           st = 15;
           refresh_screen = true;
           delay(200);
@@ -916,9 +913,9 @@
         if (refresh_screen) {
           Treat();
           refresh_screen = false;
-          stepper(1, 3, 1);
+          stepper(1, 3, 1);             //STEPPER
           for (int i = 0; i <=4; i++) {
-          mp3.playWithVolume(ss, lastVolume);
+          mp3.playWithVolume(ss, lastVolume);   //PLAY SONG
           delay(3000);
         }
           timer = 0;
@@ -950,7 +947,7 @@
 /*###########################################################################
 ###################### TELAS ################################################*/
 
-  void Home_screen() {
+  void Home_screen() {      
 
     lcd.clear();
     lcd.setCursor(0, 0); lcd.print(auxtime[3]); lcd.print("/"); lcd.print(auxtime[4]); lcd.print("/"); lcd.print(auxtime[5]);

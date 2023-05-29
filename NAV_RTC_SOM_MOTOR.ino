@@ -885,7 +885,11 @@
           Treat();
           refresh_screen = false;
           stepper(1,3,1);
-          mp3.playWithVolume(ss, lastVolume);
+        for (int i = 0; i < 4; i++){
+            mp3.playWithVolume(ss, lastVolume);
+            delay(3000);
+          }
+          
           timer = 0;
         }
 
@@ -1130,9 +1134,9 @@
     lcd.setCursor(5, 0);  // HEADER ---------------------------------
     lcd.print("Choose Sound ");
     lcd.setCursor(2, 1);  
-    lcd.print("Sound 1");
+    lcd.print("Bird");
     lcd.setCursor(2, 2);  
-    lcd.print("Sound 2");
+    lcd.print("Bell");
     lcd.setCursor(2, 3);  // RETURN ---------------------------------
     lcd.print("Back");
   }

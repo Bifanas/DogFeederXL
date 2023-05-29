@@ -116,6 +116,8 @@
 
   char slowmode[2][4] = { "off", " on" }; //slow mode
 
+  int nextmeal=0; // hora da próxima refeição
+
 
 /*################# END VARIABLES OR FIXED ##################################
 #############################################################################*/
@@ -404,6 +406,24 @@
             mp3.playWithVolume(ss, lastVolume);
           }
         }
+        
+        // next meal time
+          int proximoHorario = -1;
+          int horaatual = (auxtime[0]*100)+auxtime[1];
+          int meal1 = (meal[0][0]*100)+meal[0][1];
+          int meal2 = (meal[1][0]*100)+meal[1][1];
+          int mealtimes[2]={ meal1 , meal2 }
+          for (int horario : mealtimes) {
+              if (horario > horaatual) {
+                  proximoHorario = horario;
+                  break;
+              }
+          }
+          if (proximoHorario != -1) {
+            nextmeal = próximohorário;
+          } else {
+              mextmeal = mealtimes[0];  
+          }
         
         if (click == LOW) {  // If button was pressed, transition to the settings screen
           st = 1;
@@ -941,7 +961,7 @@
     lcd.setCursor(11, 0);
     lcd.print("Next meal");
     lcd.setCursor(13, 1);
-    lcd.print("16:30");
+    lcd.print(nextmeal);
 
     lcd.setCursor(2, 3);
     lcd.print(int(temperature));

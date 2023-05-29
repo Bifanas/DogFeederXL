@@ -112,10 +112,14 @@
 
   int timer = 0; // pra contar o num de ciclos até voltar pra tela inicial
 
-  int meal[4] = {0,0,0,0};
+  int meal[2][4] = {{8,30,200,0},{8,30,200,0}};
+
+  char slowmode[2][4]= {"off", " on"};
+
+  int x=0;
+  // {'o','f','f','o','n','/0'};
 
   
-
 /*################### END VARIABLES OR FIXED ####################################
 #################################################################################*/
 
@@ -242,8 +246,8 @@
         hour = constrain(hour, 0, 23);
 
       // Only print cursor if it moved
-      if (hour != meal[0]) {
-        meal[0] = hour;
+      if (hour != meal[x][0]) {
+        meal[x][0] = hour;
       }
       return hour;
      }
@@ -260,8 +264,8 @@
         minute = constrain(minute, 0, 59);
 
       // Only print cursor if it moved
-      if (minute != meal[1]) {
-        meal[1] = minute;
+      if (minute != meal[x][1]) {
+        meal[x][1] = minute;
       }
       return minute;
      }
@@ -278,8 +282,8 @@
         portion = constrain(portion, 0, 1000);
 
       // Only print cursor if it moved
-      if (portion != meal[2]) {
-        meal[2] = portion;
+      if (portion != meal[x][2]) {
+        meal[x][2] = portion;
       }
       return portion;
      }
@@ -377,6 +381,7 @@
     // TEMPHUMIDITY
     readDHTData(temperature, humidity);
     
+    // slowmode[meal[3]][2]
 
     // SWITCH SCREENS
     switch(st){
@@ -445,8 +450,15 @@
           refresh_screen=true;
           delay(200);
         }
-        if(click==LOW && line==1||click==LOW && line==2){
+        if(click==LOW && line==1){
           st=3;
+          x=0;
+          refresh_screen=true;
+          delay(200);
+        }
+        if(click==LOW && line==2){
+          st=3;
+          x=1;
           refresh_screen=true;
           delay(200);
         }
@@ -458,7 +470,7 @@
         }
         break;      
         
-        case 3: // schedule options
+        case 3: // schedule options (edit/remove?)
         if (refresh_screen) {
           Schedule_options();
           refresh_screen=false;
@@ -466,12 +478,12 @@
         }
         line = Cursor_nav();
         
-        if(click==LOW && line==1){
+        if(click==LOW && line==1){ // edit
           st=4;
           refresh_screen=true;
           delay(200);
         }
-        if(click==LOW && line==2){
+        if(click==LOW && line==2){//back
           st=2;
           refresh_screen=true;
           delay(200);
@@ -490,7 +502,7 @@
         }
         break;
 
-        case 4: // time set
+        case 4: // EDIT 
         if (refresh_screen) {
           Schedule_time_set();
           refresh_screen=false;
@@ -514,8 +526,8 @@
           refresh_screen=true;
           delay(200);
         }
-        if(click==LOW && line==3){
-          st=3;
+        if(click==LOW && line==3){ // back
+          st=2;
           refresh_screen=true;
           delay(200);
         }
@@ -534,15 +546,15 @@
           refresh_screen=false;
           timer = 0;
         }
-        meal[0] = encoderChangehour(meal[0]);
+        meal[x][0] = encoderChangehour(meal[x][0]);
         
 
-        if (meal[0] != lastPrintedHour) {
+        if (meal[x][0] != lastPrintedHour) {
           lcd.setCursor(2, 2);  
           lcd.print("     "); // To clear previous value
           lcd.setCursor(2, 2);  
-          lcd.print(meal[0]);
-          lastPrintedHour = meal[0];
+          lcd.print(meal[x][0]);
+          lastPrintedHour = meal[x][0];
         }  
         
         if(click==LOW ){
@@ -565,14 +577,14 @@
           refresh_screen=false;
           timer = 0;
         }
-        meal[1] = encoderChangeminute(meal[1]);
+        meal[x][1] = encoderChangeminute(meal[x][1]);
           
-        if (meal[1] != lastPrintedMinute) {
+        if (meal[x][1] != lastPrintedMinute) {
           lcd.setCursor(2, 2);  
           lcd.print("     "); // To clear previous value
           lcd.setCursor(2, 2);  
-          lcd.print(meal[1]);
-          lastPrintedMinute = meal[1];
+          lcd.print(meal[x][1]);
+          lastPrintedMinute = meal[x][1];
         }  
         
         if(click==LOW ){
@@ -595,14 +607,14 @@
           refresh_screen=false;
           timer = 0;
         }
-        meal[2] = encoderChangeportion(meal[2]);
+        meal[x][2] = encoderChangeportion(meal[x][2]);
       
-        if (meal[2] != lastPrintedPortion) {
+        if (meal[x][2] != lastPrintedPortion) {
           lcd.setCursor(2, 2);  
           lcd.print("     "); // To clear previous value
           lcd.setCursor(2, 2);  
-          lcd.print(meal[2]);
-          lastPrintedPortion = meal[2];
+          lcd.print(meal[x][2]);
+          lastPrintedPortion = meal[x][2];
         }  
 
         if(click==LOW ){
@@ -625,7 +637,16 @@
           timer = 0;
         }
         line = Cursor_nav();
-        
+        if(click==LOW && line==1){
+          meal[x][3]=1;
+          refresh_screen=true;
+          delay(200);
+        }
+        if(click==LOW && line==2){
+          meal[x][3]=0;
+          refresh_screen=true;
+          delay(200);
+        }
         if(click==LOW && line==3){
           st=4;
           refresh_screen=true;
@@ -935,10 +956,10 @@
     lcd.print("Schedule: ");
   
     lcd.setCursor(2, 1);
-    lcd.print("08:00");
+    lcd.print(meal[0][0]);lcd.print(":");lcd.print(meal[0][1]);
   
     lcd.setCursor(2, 2);
-    lcd.print("16:30");
+    lcd.print(meal[1][0]);lcd.print(":");lcd.print(meal[1][1]);
 
     lcd.setCursor(2, 3);
     lcd.print("Back");
@@ -964,20 +985,19 @@
     lcd.print("Time:");
 
     lcd.setCursor(12, 0);
-    lcd.print(meal[0]);lcd.print(":");lcd.print(meal[1]);
+    lcd.print(meal[x][0]);lcd.print(":");lcd.print(meal[x][1]);
   
     lcd.setCursor(2,1);
     lcd.print("Portion");
 
     lcd.setCursor(12, 1);
-    lcd.print(meal[2]);
+    lcd.print(meal[x][2]);
 
     lcd.setCursor(2,2);
     lcd.print("Slow");
 
     lcd.setCursor(12, 2);
-    lcd.print("On");
-
+    lcd.print(slowmode[meal[x][3]]);
     lcd.setCursor(2, 3);
     lcd.print("Back");
   }
@@ -990,7 +1010,7 @@
     lcd.print("Hour");
   
     lcd.setCursor(2,2);
-    lcd.print(meal[0]);
+    lcd.print(meal[x][0]);
 
     lcd.setCursor(2, 3);
     lcd.print("Minutes");
@@ -1003,7 +1023,7 @@
     lcd.print("Minutes");
   
     lcd.setCursor(2,2);
-    lcd.print(meal[1]);
+    lcd.print(meal[x][1]);
 
     lcd.setCursor(2, 3);
     lcd.print("Back");
@@ -1016,7 +1036,7 @@
     lcd.print("Portion");
   
     lcd.setCursor(2,2);
-    lcd.print(meal[2]);
+    lcd.print(meal[x][2]);
 
     lcd.setCursor(2, 3);
     lcd.print("Back");
@@ -1140,4 +1160,3 @@
 
 /*######################### END TELAS ###############################################
 ##################################################################################*/
-

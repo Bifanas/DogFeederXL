@@ -90,6 +90,54 @@
   };
 
 
+  int anim = 300;
+  void dog() {
+    lcd.clear();
+
+    byte dog08[8] = {B11111, B00000, B11011, B11011, B00000, B01110, B00100, B00000};
+    byte dog09[8] = {B00000, B11100, B10100, B10010, B10010, B10100, B10100, B01000};
+    byte dog07[8] = {B00000, B00111, B00101, B01001, B01001, B00101, B00101, B00010};
+
+    lcd.createChar(0, dog08);
+    lcd.createChar(1, dog09);
+    lcd.createChar(2, dog07);
+
+    lcd.setCursor(7, 0);
+    lcd.write(byte(0));
+    lcd.setCursor(8, 0);
+    lcd.write(byte(1));
+    lcd.setCursor(6, 0);
+    lcd.write(byte(2));
+    }  
+
+  void foodanimation(){
+      
+    byte food01[8] ={0b00110,0b00110,0b00000,0b00000,0b00000,0b00000,0b00000,0b00000};
+    byte food02[8] ={0b00000,0b00000,0b00110,0b00110,0b00000,0b00000,0b00000,0b00000};
+    byte food03[8] ={0b00000,0b00000,0b00110,0b00110,0b00110,0b00110,0b00000,0b00000};
+    byte food04[8] ={0b00000,0b00000,0b00110,0b00000,0b00000,0b00000,0b00110,0b00110};
+
+    lcd.createChar(0, food01);
+    lcd.createChar(1, food02);
+    lcd.createChar(2, food03);
+    lcd.createChar(3, food04);
+
+    lcd.setCursor(7, 0);
+    lcd.write(byte(0));
+    delay(anim);
+    lcd.setCursor(7, 0);
+    lcd.write(byte(1));
+    delay(anim);
+    lcd.setCursor(7, 0);
+    lcd.write(byte(2));
+    delay(anim);
+    lcd.setCursor(7, 0);
+    lcd.write(byte(3));
+    delay(anim);
+    
+  }
+
+
   // AUX VARIABLES
   int st = 0;  //setting state 0 - main screen state
 
@@ -1216,12 +1264,19 @@
 
   void Treat() {
     lcd.clear();
-    lcd.setCursor(6, 0);
-    lcd.print("D   D");
-    lcd.setCursor(5, 1);
-    lcd.print("  o.o ");
-    lcd.setCursor(6, 2);
-    lcd.print("  w ");
+    // lcd.setCursor(6, 0);
+    // lcd.print("D   D");
+    // lcd.setCursor(5, 1);
+    // lcd.print("  o.o ");
+    // lcd.setCursor(6, 2);
+    // lcd.print("  w ");
+        
+    foodanimation();
+    delay(5000);
+    dog();
+    lcd.setCursor(7,0);    
+    lcd.print("THANK YOU");    
+    
   }
 
 /*#################### END TELAS ############################################

@@ -371,13 +371,13 @@
     // RTC
     rtc.refresh();
      // Convert the RTC values to strings and store them in the auxtime array
-    itoa(rtc.second(), auxtime[2], 10);
-    itoa(rtc.minute(), auxtime[1], 10);
-    itoa(rtc.hour(), auxtime[0], 10);
+    int currentSec = rtc.second();
+    int currentMin = rtc.minute();
+    int currentHour = rtc.hour();
 
-    itoa(rtc.day(), auxtime[3], 10);
-    itoa(rtc.month(), auxtime[4], 10);
-    itoa(rtc.year(), auxtime[5], 10);
+    int currentDay = rtc.day();
+    int currentMonth = rtc.month();
+    int currentYear = rtc.year();
 
     // TEMPHUMIDITY
     readDHTData(temperature, humidity);
@@ -392,14 +392,14 @@
           refresh_screen = false;  // Only refresh the screen once per state change
           timer = 0;
           // If it's meal time, trigger the feed function to dispense food
-          if (meal[0][0] == auxtime[0] && meal[0][1] == auxtime[1]) {
+          if (meal[0][0] == currentHour && meal[0][1] == currentMin) {
             feed(calibrated_value, meal[0][2], meal[0][3]);
             mp3.playWithVolume(ss, lastVolume);
-          }
-          if (meal[1][0] == auxtime[0] && meal[1][1] == auxtime[1]) {
+        }
+        if (meal[1][0] == currentHour && meal[1][1] == currentMin) {
             feed(calibratedaux, meal[1][2], meal[1][3]);
             mp3.playWithVolume(ss, lastVolume);
-          }
+        }
         }
         
         // Calculates next meal time

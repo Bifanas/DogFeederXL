@@ -109,6 +109,9 @@
 
   int nextmeal=0; // hora da próxima refeição
 
+  int currentSec, currentMin, currentHour, currentDay, currentMonth, currentYear;
+  int nexthour, nextmin;
+
 
 /*################# END VARIABLES OR FIXED ##################################
 #############################################################################*/
@@ -371,16 +374,38 @@
     // RTC
     rtc.refresh();
      // Convert the RTC values to strings and store them in the auxtime array
-    int currentSec = rtc.second();
-    int currentMin = rtc.minute();
-    int currentHour = rtc.hour();
+    currentSec = rtc.second();
+    currentMin = rtc.minute();
+    currentHour = rtc.hour();
 
-    int currentDay = rtc.day();
-    int currentMonth = rtc.month();
-    int currentYear = rtc.year();
+    currentDay = rtc.day();
+    currentMonth = rtc.month();
+    currentYear = rtc.year();
 
     // TEMPHUMIDITY
     readDHTData(temperature, humidity);
+
+    // Calculates next meal time
+        // It looks through the scheduled meal times and selects the one that is next in line
+          static int proximoHorario = -1;
+          int horaatual = (currentHour*100)+currentMin;
+          int meal1 = (meal[0][0]*100)+meal[0][1];
+          int meal2 = (meal[1][0]*100)+meal[1][1];
+          int mealtimes[2]={ meal1 , meal2 };
+          for (int horario : mealtimes) {
+              if (horario > horaatual) {
+                  proximoHorario = horario;
+                  break;
+              }
+          }
+          if (proximoHorario != -1) {
+            nextmeal = proximoHorario;
+          } else {
+              nextmeal = mealtimes[0];  
+          }
+
+          nexthour = nextmeal/100;
+          nextmin = nextmeal%100;
 
     // SWITCH SCREENS
     // Checks the state variable 'st' and updates the display to behave accordingly
@@ -391,36 +416,18 @@
           Home_screen();
           refresh_screen = false;  // Only refresh the screen once per state change
           timer = 0;
+          digitalWrite(Enable, HIGH);
           // If it's meal time, trigger the feed function to dispense food
           if (meal[0][0] == currentHour && meal[0][1] == currentMin) {
             feed(calibrated_value, meal[0][2], meal[0][3]);
-            mp3.playWithVolume(ss, lastVolume);
+            st=19;
         }
         if (meal[1][0] == currentHour && meal[1][1] == currentMin) {
             feed(calibratedaux, meal[1][2], meal[1][3]);
-            mp3.playWithVolume(ss, lastVolume);
+            st=19;
         }
         }
-        
-        // Calculates next meal time
-        // It looks through the scheduled meal times and selects the one that is next in line
-          int proximoHorario = -1;
-          int horaatual = (auxtime[0]*100)+auxtime[1];
-          int meal1 = (meal[0][0]*100)+meal[0][1];
-          int meal2 = (meal[1][0]*100)+meal[1][1];
-          int mealtimes[2]={ meal1 , meal2 }
-          for (int horario : mealtimes) {
-              if (horario > horaatual) {
-                  proximoHorario = horario;
-                  break;
-              }
-          }
-          if (proximoHorario != -1) {
-            nextmeal = proximohorario;
-          } else {
-              mextmeal = mealtimes[0];  
-          }
-        
+              
         if (click == LOW) {  // If button was pressed, transition to the settings screen
           st = 1;
           refresh_screen = true;
@@ -935,6 +942,24 @@
           }
         }
         break;
+        case 19:
+        if (refresh_screen) {
+          Treat();
+          refresh_screen = false;
+          for (int i = 0; i <=4; i++) {
+          mp3.playWithVolume(ss, lastVolume);   //PLAY SONG
+          delay(3000);
+        }
+          timer = 0;
+        }
+        
+        else {
+          if (timer >= TIMEOUT_COUNT) {
+            st = 0;
+            refresh_screen = true;
+          }
+        }
+        break;
     }
 
     delay(15);
@@ -950,15 +975,15 @@
   void Home_screen() {      
 
     lcd.clear();
-    lcd.setCursor(0, 0); lcd.print(auxtime[3]); lcd.print("/"); lcd.print(auxtime[4]); lcd.print("/"); lcd.print(auxtime[5]);
+    lcd.setCursor(0, 0); lcd.print(currentDay); lcd.print("/"); lcd.print(currentMonth); lcd.print("/"); lcd.print(currentYear);
     // lcd.setCursor(17, 0);
     // lcd.print(rtc.dayOfWeek()-1);
     lcd.setCursor(1, 1);
-    lcd.print(auxtime[0]);lcd.print(":"); lcd.print(auxtime[1]);
+    lcd.print(currentHour);lcd.print(":"); lcd.print(currentMin);
     lcd.setCursor(11, 0);
     lcd.print("Next meal");
     lcd.setCursor(13, 1);
-    lcd.print(nextmeal);
+    lcd.print(nexthour);lcd.print(":");lcd.print(nextmin);
 
     lcd.setCursor(2, 3);
     lcd.print(int(temperature));

@@ -124,7 +124,7 @@ void garfofaca(){
 
   int timer = 0;  // pra contar o num de ciclos até voltar pra tela inicial
 
-  int meal[2][4] = { { 15, 8, 600, 0 }, { 14, 56, 600, 0 } }; // meals settings
+  int meal[2][4] = { { 7, 30, 200, 0 }, { 16, 30, 200, 0 } }; // meals settings
   //HOUR, MINUTE, PORTION AND SLOW (ON/OFF)
   int x = 0; //aux to meals settings
 
@@ -250,12 +250,20 @@ void garfofaca(){
       int encoder_move = read_encoder();  //determines if the rotary encoder has moved
       if (encoder_move == 1) {
         hour++;
+
+        if (hour > 23){
+        hour = 0;          
+        }
+        
       } else if (encoder_move == -1) {
         hour--;
+        if (hour < 0){
+        hour = 23;          
+        }
       }
 
-      hour = constrain(hour, 0, 23);    // Constrain the hour value between 0 and 23 to represent valid hours in a day
-
+     //hour = constrain(hour, 0, 23);    // Constrain the hour value between 0 and 23 to represent valid hours in a day
+      
       // Only print cursor if it moved
       if (hour != meal[x][0]) {
         meal[x][0] = hour;     // Update the stored hour
@@ -267,11 +275,18 @@ void garfofaca(){
       int encoder_move = read_encoder();   //determines if the rotary encoder has moved
       if (encoder_move == 1) {
         minute++;
+        if (minute > 59){
+        minute = 0;          
+        }
+
       } else if (encoder_move == -1) {
         minute--;
+        if (minute < 0){
+        minute = 59;          
+        }
       }
 
-      minute = constrain(minute, 0, 59);
+    //  minute = constrain(minute, 0, 59);
 
       // Only print cursor if it moved
       if (minute != meal[x][1]) {

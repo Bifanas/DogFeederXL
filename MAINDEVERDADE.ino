@@ -124,7 +124,7 @@ void garfofaca(){
 
   int timer = 0;  // pra contar o num de ciclos até voltar pra tela inicial
 
-  int meal[2][4] = { { 8, 30, 50, 0 }, { 14, 56, 100, 0 } }; // meals settings
+  int meal[2][4] = { { 15, 8, 600, 0 }, { 14, 56, 600, 0 } }; // meals settings
   //HOUR, MINUTE, PORTION AND SLOW (ON/OFF)
   int x = 0; //aux to meals settings
 
@@ -362,8 +362,8 @@ void garfofaca(){
       turns = 50 / cal;  //  to get how many turns to get 50g
 
       for (int i = 0; i <= amount; i = i + 50) {
-        stepper(turns, step, 1);  //1 turn = 4000 steps = 103g
-        stepper(0.2, step, 0);    //spins backwards chug control
+        stepper(turns, step, 0);  //1 turn = 4000 steps = 103g
+        stepper(0.2, step, 1);    //spins backwards chug control
         if (slow) {
           delay(1000);
         }

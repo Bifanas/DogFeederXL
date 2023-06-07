@@ -11,40 +11,16 @@ The current version of DogFeederXL is just the beginning. Future plans include t
 
 ## Components
 
-The materials used were:
+The construction of the DogFeederXL involves the following components:
 
 - Arduino Uno
-
-![image](https://github.com/Bifanas/DogFeederXL/assets/57140719/013c2ca1-4a08-4b24-a8fe-3d4d04ae737e)
-
 - I2c rtc ds130
-
-![image](https://github.com/Bifanas/DogFeederXL/assets/57140719/e1d350ec-1cee-42be-a4e7-69e6b0a31b1d)
-
 - Rotary encoder with switch
-
-![image](https://github.com/Bifanas/DogFeederXL/assets/57140719/0a4dc5aa-9135-4bc7-b364-0a298b9eb24c)
-
 - Load cell
-
-![image](https://github.com/Bifanas/DogFeederXL/assets/57140719/9fd9e69b-2905-4bc7-baad-f2c79455131e)
-
 - DHT22
-
-![image](https://github.com/Bifanas/DogFeederXL/assets/57140719/552fbc3f-246f-4229-9a32-b3159f2270e6)
-
 - Stepper motor nema 17 70:1
-
-![image](https://github.com/Bifanas/DogFeederXL/assets/57140719/e5059f43-4c50-4568-be29-38a1be16ab59)
-
 - Mp3 module with amplifier
-
-![image](https://github.com/Bifanas/DogFeederXL/assets/57140719/37f7fbb9-a675-4437-9bbb-454b766af16a)
-
 - 16x4 LCD screen 
-
-![image](https://github.com/Bifanas/DogFeederXL/assets/57140719/9cba0666-379e-4a07-bbe7-d8266cd46f22)
-
 - DRV8825 Driver Module
 - Uninterruptible mobile power supply
 - Jack 5mm conection

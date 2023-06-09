@@ -10,6 +10,7 @@ The feeder allows pet owners to program specific feeding schedules, determining 
 The current version of DogFeederXL is just the beginning. Future plans include the development of an application to remotely manage and control the feeding system, offering enhanced flexibility and convenience.
 
 ## Components
+![image](https://github.com/Bifanas/DogFeederXL/assets/57140719/3b453b86-e5c4-4297-abf6-aee8dd920068)
 
 The construction of the DogFeederXL involves the following components:
 
@@ -26,6 +27,8 @@ The construction of the DogFeederXL involves the following components:
 - Jack 5mm conection
 
 Several components of the feeder, including its base, the screw, the bowl, the lid, and the reservoir, were 3D printed to achieve a precise and efficient design.
+
+
 
 ## Menu Navigation
 
